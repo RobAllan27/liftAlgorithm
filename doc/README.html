@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>README
+</title>
+</head>
+<body>
+<A>
+This is some overview information for the package from Rob Allan - package at https://github.com/RobAllan27/liftAlgorithm.git<br>
+<br><b>Classes</b><br><br><br>
+<br><b>Lift</b><br>
+This is an entity that stores the state of the lift - we store things like<br>
+ * 		the current floor<br>
+ * 		the direction it is moving in<br>
+ *      the lift number - a simple character lift identifier<br> 
+ *      the list of queued floors for the lift<br>
+ *      the next positioning floor for the lift<br><br>
+<br><b>FloorsWaitingSets</b>This class holds lists of floors waiting to go up or down as 2 separate lists.<br><br>
+<br><b>LiftThread</b>This thread class emulates the behaviour of the lift itself as it travels around and users press buttons on floors. <br><br>
+<br><b>LiftCaller</b><br>This threaded class reflects the use case of users calling the lift.<br>
+<br><b> LiftChooser </b><br>This class selects a suitable Lift and schedules it to stop.  It considers the floor waiting sets and the set of lifts (so it can get their state.<br>
+<br><b>LiftProgramRunner</b><br>
+This is the main class - its role is to kick off 3 sets of threads<br> -
+  -  one for the floors waiting<br>
+  - another set for the various lifts, along with their identifiers<br>
+  - a lift chooser that looks at the state of play and allocates lifts. <br>
+<br><b>LiftThread</b><br>
+This thread emulates the behaviour of the lift itself as it travels around and users press buttons on floors.<br>
+- 500 mSec between a floor<br>
+- n * 500 mSec at a floor stop<br>
+<br><br><br><b>Visual Frames</b><br><br>
+
+<b>Floor Waiting Set</b><br>
+This has a visual frame for the Floors that are waiting. This notably has methods to allow the 2 fields to be updated with a treeset of integers of the floors. <br>
+The actual rendering of the information (e.g. with the commas and spacing) is left to that class.</br>
+
+<b>Lift Meter Visual Frames</b>
+This is a frame that is created for each lift, and displays</br>
+ - Current Floor - the current floor that the lift is on</br>
+ - Moving Direction - a number indicating the direction it is moving in</br>
+ - Positioning Floor – i.e. next floor it may have to visit on a positioning movement</br>
+ - Queued floors - the queued floors for that lift. </br>
+</A> 
+</body>
+</html>

@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>README
+</title>
+</head>
+<body>
+<A>
+This is some overview information for the package from Rob Allan - package at https://github.com/RobAllan27/RandomDataGenerator<br/>
+<br/>
+<b>RandomDataSource</b> is the core of the application and creates the sample data.
+<br/>
+Features<br/>
+ * It has a set of Lists that hold lists of values of names - such as firstnames, lastnames, states etc.<br/>
+  
+ * The generic Email Suffixes are for gmail etc.<br/>
+ 
+ * The company email suffices represent email address suffixes (after the @ symbol) for specific companies like lawnmowers.com.au is the suffix to
+ * rob@lawnmowers.com.au<br/>
+  
+ * We have the Australian States and a list of cities in Australia - many of these are actually towns<br/>
+  
+ * The code uses String builders to reduce the number of string manipulations (immutable strings)<br/>
+ 
+ * There are set of generated string values that are declared up front - these will be populated as the program proceeds.<br/>
+
+ * The generateNewRandomPerson() method defines the fields being created and their order. It calls supporter methods such as generateRandomPhoneAndPostCodeNumbers or getEmailAddress to actually create the information.<br/>
+<br/> 
+These in turn call methods like generatePostCode, generateDomesticCode and generateMobileNumber to create specific values.
+It may be that the embedded business rules within these needs extending / altering to create new field rules. <br/>
+<br/>
+<b>RandomDataRunner</b> is a simple class that allows the collator to be run.<br/>
+<br/>
+<b>RandomDataCollator</b> holds details of where the file is located that the data will be written to. <br/>
+It also defines the number of iteration of data creation and therefore how many rows of data are created.<br/>
+<br/>
+<b>Company</b> - this is POJO that holds data that needs to be linked - in this case the company email address and website.<br/>
+</A> 
+</body>
+</html>
+
