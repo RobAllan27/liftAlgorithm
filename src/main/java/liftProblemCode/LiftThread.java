@@ -21,15 +21,36 @@ public class LiftThread implements Runnable {
 	private Lift lift;
 	
 	/**
-	 * a constant effectively - the highest floor that this lift goes to.
+	 * a constant effectively - the highest floor that this lift goes to. Comes from properties file
 	 */
-	private int HighestFloor = 28;
+	private int highestFloor;
+
+	/**
+	 * The longest wait for a lift at a floor - actual value will use this with a random method to get a wait period. Comes from properties file
+	 */
+	private int longestLiftWaitAtFloor;
+	
+	/**
+	 * The longest wait for a lift at a floor - actual value will use this with a random method to get a wait period. Comes from properties file
+	 */
+	private int shortestLiftWaitAtFloor;
+	
+	/**
+	 * The time that it takes a lift to transition betwen floors Comes from properties file
+	 */
+	private int liftTimePerFloorTravelPeriod;
+
 	
 	/** A constructor for the lift thread which takes and identifier for the lift.
 	 * @param inLiftID This is the identifier for the lift.
 	 */
+	
 	public LiftThread(String inLiftID) {
 		lift = new Lift(inLiftID);
+		SingletonPropertyReader signPropReader = SingletonPropertyReader.getInstance();
+		longestLiftWaitAtFloor = Integer.parseInt(signPropReader.getPropertyValue("longestLiftWaitAtFloor"));
+		shortestLiftWaitAtFloor = Integer.parseInt(signPropReader.getPropertyValue("shortestLiftWaitAtFloor"));
+		liftTimePerFloorTravelPeriod = Integer.parseInt(signPropReader.getPropertyValue("liftTimePerFloorTravelPeriod"));
 	} 
 	
 	/** a simple get method to return the lift for this thread.
@@ -37,6 +58,7 @@ public class LiftThread implements Runnable {
 	 */
 	public Lift getLift() {
 		return this.lift;
+
 	}
 	
 	/* (non-Javadoc)
@@ -103,7 +125,7 @@ public class LiftThread implements Runnable {
 		for (int i = 0; i < numberOfFloorSelections;i++){
 			// get new random floor above or below us depending on direction
 			if (lift.getMovingdirection() == 1) {
-			int floorNumber =  r.nextInt((HighestFloor - lift.getCurrentFloor()) + 1) + lift.getCurrentFloor();
+			int floorNumber =  r.nextInt((highestFloor - lift.getCurrentFloor()) + 1) + lift.getCurrentFloor();
 			lift.addFloorToQueue(floorNumber);
 			}
 			
@@ -120,11 +142,11 @@ public class LiftThread implements Runnable {
 	 * from a min to a max period  - just like a real system.
 	 */
 	private void executeRandomWaitingPeriodAtFloor() {
-		int longestWait = 30000;
-		int shortestWait = 5000;
+		int longestLiftWaitAtFloor = 30000;
+		int shortestLiftWaitAtFloor = 5000;
 		
 		Random r = new Random();
-		int wait =  r.nextInt((longestWait - shortestWait ) + 1) + shortestWait ;
+		int wait =  r.nextInt((longestLiftWaitAtFloor - shortestLiftWaitAtFloor ) + 1) + shortestLiftWaitAtFloor ;
 		
 		try {
 		Thread.sleep(wait);
@@ -139,9 +161,9 @@ public class LiftThread implements Runnable {
 	 */
 	private void timePeriodtoTravel(int countofFloorsToGoPast) {
 		// this could be a periodToWait whilst moving between floors
-		int perFloorPeriod = 500;
+		int liftTimePerFloorTravelPeriod = 500;
 		try {
-		Thread.sleep(countofFloorsToGoPast * perFloorPeriod);
+		Thread.sleep(countofFloorsToGoPast * liftTimePerFloorTravelPeriod);
 		}
 		catch(Exception e) {
 			System.out.println("Problem in lift thread");

@@ -12,21 +12,38 @@ public class LiftCaller implements Runnable {
 	/**
 	 * Highest Floor - a integer representing the hughest floor
 	 */
-	private final int HighestFloor = 28;
+	private final int highestFloor;
 	/**
 	 * Lowest Floor -  an integer representing the lowest floor.
 	 */
-	private final int LowestFloor = 0;
+	private final int lowestFloor;
 	/**
 	 * The instance of the floor waiting sets -  ie the entity holding the sets of floors waiting to go up or down.
 	 */
 	private FloorsWaitingSets floorsWaitingSets;
 	
+	/** minimum wait period between people calling a lift -used as minimum in a randomly selected period.
+	 * 
+	 */
+	private int minWaitPeriodBetweenButtonPress;
+	
+	/** maximum wait period between people calling a lift - used as maximum in a randomly selected period.
+	 * 
+	 */
+	private int maxWaitPeriodBetweenButtonPress;
+	
+	
 	/** Constructor - with an instance of the floor waiting sets - i.e. the entity holding the sets of floors waiting to go up or down
 	 * @param inFloorsWaitingSets - this is the class holding list for floors waiting to go up and down.
-	 */
+	 */	
 	public LiftCaller(FloorsWaitingSets inFloorsWaitingSets) {
 		this.floorsWaitingSets = inFloorsWaitingSets;
+		
+		SingletonPropertyReader signPropReader = SingletonPropertyReader.getInstance();
+		highestFloor = Integer.parseInt(signPropReader.getPropertyValue("highestFloor"));
+		lowestFloor = Integer.parseInt(signPropReader.getPropertyValue("lowestFloor"));
+		minWaitPeriodBetweenButtonPress = Integer.parseInt(signPropReader.getPropertyValue("minWaitPeriodBetweenButtonPress"));
+		maxWaitPeriodBetweenButtonPress = Integer.parseInt(signPropReader.getPropertyValue("maxWaitPeriodBetweenButtonPress"));
 	}
 	
 	/* (non-Javadoc)
@@ -66,20 +83,17 @@ public class LiftCaller implements Runnable {
 		}
 		
 	 // lets look for the other floors  - not ground floor.
-		int floorNumber =  r.ints(2, (28 + 1)).findFirst().getAsInt();
+		int floorNumber =  r.ints(2, (highestFloor + 1)).findFirst().getAsInt();
 		// To select the up or down randomly - 0 for down 1 for up -  
 		// we can only go 1 way at the bottom and top floors
 		int upOrDown;
 		
-		switch (floorNumber) {
-		case LowestFloor:
+		if (floorNumber == lowestFloor){
 			upOrDown = 1;
-			break;
-			// this specific case is defensive code frankly, we hsould not have come in here.
-		case HighestFloor:
-			upOrDown = 0;
-			break;
-		default:
+		}else if (floorNumber == highestFloor){
+				upOrDown = 0;
+		}
+		else {
 			//double upOrDownAsFloat = 1 * (2 + Math.random( ) );
 			//upOrDown = (int)upOrDownAsFloat;
 			
@@ -98,7 +112,6 @@ public class LiftCaller implements Runnable {
 				 // for case 2/3/4 we call go down in the lift
 			}
 			
-			break;
 		}
 		if (upOrDown == 1) {
 			floorsWaitingSets.addFloorWaitingtoGoUp(floorNumber);
@@ -112,9 +125,9 @@ public class LiftCaller implements Runnable {
 	 */
 	private void waitRandomPeriodForButtonPresses() {
 
-		int min = 1000;
-		int max = 3000;
-	    int PeriodToWait = (int)(Math.random()*((max-min)+1))+min;
+		//int minWaitPeriodBetweenButtonPress = 1000;
+		//int maxWaitPeriodBetweenButtonPress = 3000;
+	    int PeriodToWait = (int)(Math.random()*((maxWaitPeriodBetweenButtonPress-minWaitPeriodBetweenButtonPress)+1))+minWaitPeriodBetweenButtonPress;
 	// hmmm may not return an int
 	    
 			try {

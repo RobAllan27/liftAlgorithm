@@ -25,6 +25,13 @@ public class LiftProgramRunner {
 	public static void main(String[] args) {
 
 		// start the process of calling lifts
+		//System.out.println(PropertyReader.getProperty("time"));
+		SingletonPropertyReader signPropReader = SingletonPropertyReader.getInstance();
+		System.out.println(signPropReader.getPropertyValue("browser"));
+		System.out.println(signPropReader.getPropertyValue("time"));
+		//System.out.println(ResourceGetter.getProperty("browser"));
+		
+		/*
 		FloorsWaitingSets fwsSets = new FloorsWaitingSets();
 		Thread thread = new Thread(new LiftCaller(fwsSets));
 		thread.start();
@@ -47,6 +54,8 @@ public class LiftProgramRunner {
 			thread.start();
 		}
 
+		*/
+		
 		/*
 		
 		LiftChooser lftchsr = new LiftChooser(fwsSets, liftset);
