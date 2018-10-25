@@ -5,11 +5,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /** This class selects a suitable Lift and schedules it to stop. 
  * It consider the floor waiting sets and the set of lifts (so it can get their state.
 */
 public class LiftChooser implements Runnable {
+	
+	private static final Logger logger = LogManager.getLogger();
 	
 	/** The set of  Floors that are waiting for tiher up or down
 	 * */ 
@@ -25,6 +30,7 @@ public class LiftChooser implements Runnable {
 		this.fwsets = inFWSets;
 		this.liftset = inLiftSet;
 
+		logger.debug("Creating the lift chooser thread");
 	}
 
 	/** the lift chooser iterates tough all the floors waiting to go up and the applies a set of rules in order to try to find a candidate lift.
@@ -122,6 +128,7 @@ public class LiftChooser implements Runnable {
 				Lift chosenLift  = upCandidatesRule1.get(0);
 				fwsets.removeFloorWaitingtoGoUp(floor_up_in_question);
 				chosenLift.setMovingdirection(1);
+				logger.debug("Lift " + chosenLift.liftID + " already at floor and is travelling up");
 				break;
 			}
 
@@ -136,6 +143,7 @@ public class LiftChooser implements Runnable {
 			if (upCandidatesRule1B.size() > 0) {
 				Lift chosenLift  = upCandidatesRule1B.get(0);
 				fwsets.removeFloorWaitingtoGoUp(floor_up_in_question);
+				logger.debug("Lift " + chosenLift.liftID + " has floor added " + floor_up_in_question + " and is travelling up");
 				break;
 			}			 
 
@@ -154,6 +162,7 @@ public class LiftChooser implements Runnable {
 				Lift chosenLift  = sortedLifts.get(0);
 				chosenLift.addFloorToQueue(floor_up_in_question);
 				fwsets.removeFloorWaitingtoGoUp(floor_up_in_question);
+				logger.debug("Lift " + chosenLift.liftID + " has floor added " + floor_up_in_question + " and is travelling down");
 				break;
 			}
 
@@ -191,6 +200,7 @@ public class LiftChooser implements Runnable {
 					Lift chosenLift  = downCandidatesRule1.get(0);
 					fwsets.removeWaitingtoGoDown(floor_down_in_question);
 					chosenLift.setMovingdirection(-1);
+					logger.debug("Lift " + chosenLift.liftID + " already at floor and is travelling down");
 					break;
 				}
 
@@ -205,6 +215,7 @@ public class LiftChooser implements Runnable {
 
 					Lift chosenLift  = downCandidatesRule1B.get(0);
 					fwsets.removeWaitingtoGoDown(floor_down_in_question);
+					logger.debug("Lift " + chosenLift.liftID + " has floor added " + floor_down_in_question + " and is travelling down");
 					break;
 				}
 
@@ -222,6 +233,7 @@ public class LiftChooser implements Runnable {
 					Lift chosenLift  = sortedLifts.get(0);
 					chosenLift.addFloorToQueue(floor_down_in_question);
 					fwsets.removeWaitingtoGoDown(floor_down_in_question);
+					logger.debug("Lift " + chosenLift.liftID + " has floor added " + floor_down_in_question + " and is travelling down");
 					break;
 				}
 
@@ -285,6 +297,7 @@ public class LiftChooser implements Runnable {
 				RedirectClosestPutUpChosenLift.addFloorToQueue(floor_in_question);
 				fwsets.removeFloorWaitingtoGoUp(floor_in_question);
 				RedirectClosestPutUpChosenLift.setMovingdirection(2);
+				logger.debug("Lift " + RedirectClosestPutDownChosenLift.liftID + " was stopped - has floor added " + floor_in_question + "and is being sent up");
 			}
 	
 		}
@@ -294,8 +307,9 @@ public class LiftChooser implements Runnable {
 			RedirectClosestPutDownChosenLift.addFloorToQueue(floor_in_question);
 			fwsets.removeWaitingtoGoDown(floor_in_question);
 			RedirectClosestPutDownChosenLift.setMovingdirection(-2);
+			logger.debug("Lift " + RedirectClosestPutDownChosenLift.liftID + " was stopped - has floor added " + floor_in_question + "and is being sent down");
+			
 		}
-
 	}
 
 }

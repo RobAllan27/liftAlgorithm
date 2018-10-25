@@ -4,6 +4,9 @@ import java.util.TreeSet;
 
 import visualControls.FloorsWaitingVisualFrame;
 import visualControls.LiftMeterVisualFrame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /** This class holds lists of floors waiting to go up or down as 2 separate lists. 
  * 
@@ -12,6 +15,7 @@ import visualControls.LiftMeterVisualFrame;
  */
 public class FloorsWaitingSets {
 	
+	private static final Logger logger = LogManager.getLogger();
 	
 	/**
 	 * A sorted treeset of all the floors waiting to go up  - at each of those floors someone has pressed
@@ -38,17 +42,25 @@ public class FloorsWaitingSets {
 		floorsWaitingForDownList  = new TreeSet<Integer>();
 		floorsWaitingForUpList = new TreeSet<Integer>();
 		
+		logger.debug("Created lists for the floors waiting - up and down");
+		
 		floorsWaitingVF = new FloorsWaitingVisualFrame();
 		
+		logger.debug("Creating the Visual Frame for the Floors waiting lists");
+
 	}
 	
 	/** The add floor to the waiting set to go up will add the floor to the set of floors wating to go up.
 	 * 
 	 * @param FloorForUp - the actual floor that we want to add - a going up floor.
 	 */
-	public void addFloorWaitingtoGoUp(int FloorForUp) {
+	public synchronized void addFloorWaitingtoGoUp(int FloorForUp) {
 		floorsWaitingForUpList.add(new Integer(FloorForUp));
+		logger.debug("added a floor to list of waiting to go up  + Floor is " + FloorForUp);
+		
 		floorsWaitingVF.setTextPaneFWGUp(floorsWaitingForUpList);
+		
+		
 		/* to some test code to watch it
 		if (floorsWaitingForUpList.size() > 10)
 		{
@@ -68,9 +80,12 @@ public class FloorsWaitingSets {
 	 * 
 	 * @param FloorForDown - - the actual floor that we want to add - a going down floor.
 	 */
-	public void addFloorWaitingtoGoDown(int FloorForDown) {
+	public synchronized void addFloorWaitingtoGoDown(int FloorForDown) {
 		floorsWaitingForDownList.add(new Integer(FloorForDown));
 		floorsWaitingVF.setTextPaneFWGDown(floorsWaitingForDownList);
+		
+		logger.debug("added a floor to list of waiting to go down  + Floor is " + FloorForDown);
+		
 		/* to some test code to watch it
 		if (floorsWaitingForDownList.size() > 10)
 		{
@@ -92,8 +107,9 @@ public class FloorsWaitingSets {
 	 * @param FloorBeenVistedonUp - this floor has now been visited by a lift,
 	 *  that is going in the right upwards direction
 	 */
-	public void removeFloorWaitingtoGoUp(int FloorBeenVistedonUp) {
+	public synchronized void removeFloorWaitingtoGoUp(int FloorBeenVistedonUp) {
 		floorsWaitingForUpList.remove(new Integer(FloorBeenVistedonUp));
+		logger.debug("Removed a floor from list of waiting to go up  + Floor is " + FloorBeenVistedonUp);
 		floorsWaitingVF.setTextPaneFWGUp(floorsWaitingForUpList);
 	}
 	
@@ -103,8 +119,9 @@ public class FloorsWaitingSets {
 	 * @param FloorBeenVistedonDown - this floor has now been visited by a lift,
 	 *  that is going in the right upwards direction
 	 */
-	public void removeWaitingtoGoDown(int FloorBeenVistedonDown) {
+	public synchronized void removeWaitingtoGoDown(int FloorBeenVistedonDown) {
 		floorsWaitingForUpList.remove(new Integer(FloorBeenVistedonDown));
+		logger.debug("Removed a floor from list of waiting to go down  + Floor is " + FloorBeenVistedonDown);
 		floorsWaitingVF.setTextPaneFWGDown(floorsWaitingForDownList);
 	}
 

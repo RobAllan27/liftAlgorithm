@@ -28,7 +28,9 @@ public class TestRunner {
 	System.out.println(System.getProperty("os.version")	+ " os version");
 	System.out.println(System.getProperty("os.arch")	+ " os arch");
 
-		
+	FloorsWaitingSets myFWsets  =  new FloorsWaitingSets();
+	
+/*		
 		int floorNumber;
 		Random r = new Random();
 		for (int i =0; i < 1; i++) {
@@ -36,7 +38,7 @@ public class TestRunner {
 				floorNumber = r.ints(1, (4 + 1)).findFirst().getAsInt();
 				System.out.println(floorNumber);;
 		}
-		
+*/		
         int[] numArr = {7};
         // lambda expression that implements the display method 
         // of the IFunc functional interface 

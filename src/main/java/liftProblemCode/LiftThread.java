@@ -1,6 +1,8 @@
 package liftProblemCode;
 
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // this thread emulates the actual routing of lift - 500 mSec between a floor 
 // n * 500 mSec at a floor stop
@@ -15,6 +17,8 @@ import java.util.Random;
  */
 public class LiftThread implements Runnable {
 
+	private static final Logger logger = LogManager.getLogger();
+	
 	/**
 	 * Lift - a private member reference to the lift that this thread is controlling the movement of. 
 	 */
@@ -51,6 +55,7 @@ public class LiftThread implements Runnable {
 		longestLiftWaitAtFloor = Integer.parseInt(signPropReader.getPropertyValue("longestLiftWaitAtFloor"));
 		shortestLiftWaitAtFloor = Integer.parseInt(signPropReader.getPropertyValue("shortestLiftWaitAtFloor"));
 		liftTimePerFloorTravelPeriod = Integer.parseInt(signPropReader.getPropertyValue("liftTimePerFloorTravelPeriod"));
+		logger.debug("Starting a list thread for lift " +  inLiftID);
 	} 
 	
 	/** a simple get method to return the lift for this thread.
@@ -125,15 +130,16 @@ public class LiftThread implements Runnable {
 		for (int i = 0; i < numberOfFloorSelections;i++){
 			// get new random floor above or below us depending on direction
 			if (lift.getMovingdirection() == 1) {
-			int floorNumber =  r.nextInt((highestFloor - lift.getCurrentFloor()) + 1) + lift.getCurrentFloor();
-			lift.addFloorToQueue(floorNumber);
-			}
-			
+				int floorNumber =  r.nextInt((highestFloor - lift.getCurrentFloor()) + 1) + lift.getCurrentFloor();
+				lift.addFloorToQueue(floorNumber);
+				logger.debug("User chooses a floor above " +  floorNumber + " for lift ");
+			} 
+
 			if (lift.getMovingdirection() == -1) {
 				int floorNumber =  r.nextInt((lift.getCurrentFloor()) - 1);
 				lift.addFloorToQueue(floorNumber);
-				}
-			i++;	
+				logger.debug("User chooses a floor below " +  floorNumber + " for lift ");
+			}	
 		}	
 	}
 		
@@ -147,13 +153,14 @@ public class LiftThread implements Runnable {
 		
 		Random r = new Random();
 		int wait =  r.nextInt((longestLiftWaitAtFloor - shortestLiftWaitAtFloor ) + 1) + shortestLiftWaitAtFloor ;
-		
+		logger.debug("Lift about to wait for users at a floor ");
 		try {
 		Thread.sleep(wait);
 		}
 		catch(Exception e) {
 			System.out.println("Problem in lift runner thread");
 		}
+		logger.debug("Lift completed waiting for users at a floor ");
 	}
 
 	/** This method works out how long it will take to go between floors
@@ -162,11 +169,13 @@ public class LiftThread implements Runnable {
 	private void timePeriodtoTravel(int countofFloorsToGoPast) {
 		// this could be a periodToWait whilst moving between floors
 		int liftTimePerFloorTravelPeriod = 500;
+		logger.debug("Lift about to start to travel between floors ");
 		try {
 		Thread.sleep(countofFloorsToGoPast * liftTimePerFloorTravelPeriod);
 		}
 		catch(Exception e) {
 			System.out.println("Problem in lift thread");
 		}
+		logger.debug("Lift finished this leg to travelling between floors ");
 	}
 }

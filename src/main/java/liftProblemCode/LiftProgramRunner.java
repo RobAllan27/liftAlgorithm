@@ -2,6 +2,8 @@ package liftProblemCode;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** This is the main class -  its role is to kick off 3 sets of threads -
  *     one for the floors waiting
@@ -13,6 +15,8 @@ import java.util.Set;
  */
 
 public class LiftProgramRunner {
+	
+	private static final Logger logger = LogManager.getLogger();
 	
 	/** This is the main method to run the application. It creates
 	 *     a Floor waiting set that is thread to allow random sets if floors to be created.

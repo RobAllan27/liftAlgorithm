@@ -3,6 +3,8 @@ package liftProblemCode;
 import java.util.TreeSet;
 
 import visualControls.LiftMeterVisualFrame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** This is an entity that stores the state of the lift - we store things like<br>
  * 		the current floor<br>
@@ -17,6 +19,9 @@ public class Lift {
 	/**
 	 * The current floor for the lift
 	 */
+	
+	private static final Logger logger = LogManager.getLogger();
+	
 	private int currentFloor;
 	
 	/**
@@ -40,11 +45,10 @@ public class Lift {
 	private int positionFloor; // Floor sent to for 'positioning flight
 	
 	/**
-	 * A characters String to identify the lift.
+	 * A characters String to identify the lift. we make it public final so it cannot be changed.
 	 */
 	
-	private String liftID;
-
+	public final String liftID;
 	
 	private LiftMeterVisualFrame liftvisFrame ;
 	
@@ -63,28 +67,35 @@ public class Lift {
 		movingdirection = 0;
 		queuedFloors = new TreeSet<Integer>();
 		
+		logger.debug("Created a lift - lift Id " + inliftID);
+		
 		LiftMeterVisualFrame liftvisFrame  = new LiftMeterVisualFrame(liftID);
 	}
 	
 	/** A get method for the current floor for a lift
 	 * @return an integer for the current floor
 	 */
-	public int getCurrentFloor() {
+	
+	
+	
+	public synchronized int getCurrentFloor() {
 		return currentFloor;
 	}
 	
 	/** A set method for the lift current floor value.
 	 * @param currentFloor -  the current floor of the lift
 	 */
-	public void setCurrentFloor(int currentFloor) {
-		this.currentFloor = currentFloor;
-		liftvisFrame.setCurrentFloorTF(currentFloor);
+	public synchronized void setCurrentFloor(int inCurrentFloor) {
+		
+		this.currentFloor = inCurrentFloor;
+		logger.debug("Setting the floor for a  lift - lift Id " + liftID + " Floor " + currentFloor);
+		liftvisFrame.setCurrentFloorTF(inCurrentFloor);
 	}
 	
 	/** This returns a int to reflect the direction the lift is moving in. 2 for positioning up, 1 for up, 0 for stopped, -1 for down, -2 for positioning down.
 	 * @return int - the moving direction.
 	 */
-	public int getMovingdirection() {
+	public synchronized int getMovingdirection() {
 		return movingdirection;
 	}
 	
@@ -92,22 +103,23 @@ public class Lift {
 	 * 
 	 * @param movingdirection - an int 2 for positioning up, 1 for up, 0 for stopped, -1 for down, -2 for positioning down.
 	 */
-	public void setMovingdirection(int movingdirection) {
-		this.movingdirection = movingdirection;
+	public synchronized void setMovingdirection(int inMovingDirection) {
+		this.movingdirection = inMovingDirection;
+		logger.debug("Setting the direction for a  lift - lift Id " + liftID + " moving direction " + inMovingDirection);
 		liftvisFrame.setMovingDirectionTF(movingdirection);
 	}
 	
 	/** A query method to return the size of the floor queue.
 	 * @return an integer reflecting the size of the queued floors for a lift - this enables us to send choose a lift whose itinary is less busy for example
 	 */
-	public int sizeOfFloorQ() {
+	public synchronized int sizeOfFloorQ() {
 		return queuedFloors.size();
 	}
 	
 	/** A get method to obtain the set of queued floors.
 	 * @return TreeSet of integers of the floor list.
 	 */
-	public TreeSet<Integer> getQueuedFloors() {
+	public synchronized TreeSet<Integer> getQueuedFloors() {
 		return queuedFloors;
 	}
 	//possibly synch this method
@@ -115,12 +127,13 @@ public class Lift {
 	/** This allows a floor to be removed from the queue of floors that a lift has - we have visited this floor.
 	 * @param floorTobeRemoved - an int of floor to be removed.
 	 */
-	public void purgeFloorFromLiftQueue(int floorTobeRemoved) {
+	public synchronized void purgeFloorFromLiftQueue(int floorTobeRemoved) {
 			queuedFloors.remove(new Integer(floorTobeRemoved));
 			if (queuedFloors.size()== 0)
 			{
 				movingdirection = 0;
 			}
+			logger.debug("Removing a Floor - lift Id " + liftID + " floor being removed " + floorTobeRemoved);
 			liftvisFrame.setQueuedFloors(queuedFloors);
 	}
 
@@ -128,17 +141,18 @@ public class Lift {
 	 * 
 	 * @param floorToBeAdded -  an integer representing the floor to be added.
 	 */
-	public void addFloorToQueue(int floorToBeAdded)
+	public synchronized void addFloorToQueue(int floorToBeAdded)
 	{
 		Integer IntegerFloortobeadded = new Integer(floorToBeAdded);
 		queuedFloors.add(IntegerFloortobeadded);
+		logger.debug("Adding a Floor - lift Id " + liftID + " floor being added " + floorToBeAdded);
 		liftvisFrame.setQueuedFloors(queuedFloors);
 	}
 	
 	/** A method to allow the next Stop for a lift to be identified
 	 * @return int - next floor
 	 */
-	public int getNextStop() {
+	public synchronized int getNextStop() {
 		if ((movingdirection == -1) || (movingdirection == -2)) {
 			return queuedFloors.last().intValue();
 		}
@@ -156,7 +170,7 @@ public class Lift {
 	 * @return int for the position floor
 	 * 
 	 */
-	public int getPositionFloor() {
+	public synchronized int getPositionFloor() {
 		return positionFloor;
 	}
 
@@ -164,7 +178,7 @@ public class Lift {
 	 * 
 	 * @param positionFloor - an integer representing the floor where the lift is located
 	 */
-	public void setPositionFloor(int positionFloor) {
+	public synchronized void setPositionFloor(int positionFloor) {
 		this.positionFloor = positionFloor;
 		liftvisFrame.setPositioningFloorTF(positionFloor);
 		

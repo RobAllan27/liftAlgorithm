@@ -1,6 +1,8 @@
 package liftProblemCode;
 
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** This threaded class reflects the use case of users calling the lift.
  * 
@@ -9,6 +11,8 @@ import java.util.Random;
  */
 public class LiftCaller implements Runnable {
 
+	private static final Logger logger = LogManager.getLogger();
+	
 	/**
 	 * Highest Floor - a integer representing the hughest floor
 	 */
@@ -44,6 +48,8 @@ public class LiftCaller implements Runnable {
 		lowestFloor = Integer.parseInt(signPropReader.getPropertyValue("lowestFloor"));
 		minWaitPeriodBetweenButtonPress = Integer.parseInt(signPropReader.getPropertyValue("minWaitPeriodBetweenButtonPress"));
 		maxWaitPeriodBetweenButtonPress = Integer.parseInt(signPropReader.getPropertyValue("maxWaitPeriodBetweenButtonPress"));
+		
+		logger.debug("Creating a lift caller thread ");
 	}
 	
 	/* (non-Javadoc)
@@ -79,6 +85,7 @@ public class LiftCaller implements Runnable {
 		switch (areWeOnGroundRandom) {
 			case 1:
 				floorsWaitingSets.addFloorWaitingtoGoUp(0);
+				logger.debug("Adding Floor 0 to go up" );
 			return;
 		}
 		
@@ -115,8 +122,10 @@ public class LiftCaller implements Runnable {
 		}
 		if (upOrDown == 1) {
 			floorsWaitingSets.addFloorWaitingtoGoUp(floorNumber);
+			logger.debug("Adding a Floor " + floorNumber + " waiting to go up" );
 		} else {
-			floorsWaitingSets.addFloorWaitingtoGoDown(floorNumber);	
+			floorsWaitingSets.addFloorWaitingtoGoDown(floorNumber);
+			logger.debug("Adding a Floor " + floorNumber + " waiting to go up" );
 		}
 	}
 	
